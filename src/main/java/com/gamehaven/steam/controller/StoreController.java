@@ -1,7 +1,5 @@
-package com.gamehaven.controller;
+package com.gamehaven.steam.controller;
 
-import com.gamehaven.model.FeaturedGame;
-import com.gamehaven.model.Game;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;

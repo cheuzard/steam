@@ -1,4 +1,4 @@
-package com.gamehaven;
+package com.gamehaven.steam;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
