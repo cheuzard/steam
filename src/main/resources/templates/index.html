@@ -1,84 +1,133 @@
+
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en " xmlns:th="http://www.thymeleaf.org" >
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GAMEHAVEN</title>
-    <link rel="stylesheet" th:href="@{/css/style.css}">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Game Store</title>
+  <link href="css/bootstrap.css" rel="stylesheet">
+  <style>
+    body {
+      background-color: #111;
+      color: #fff;
+    }
+
+    .price-original {
+      text-decoration: line-through;
+      color: gray;
+    }
+    .section-title {
+      margin-top: 2rem;
+      margin-bottom: 1rem;
+      font-size: 1.5rem;
+    }
+    .small-img{
+      width: 200px;
+    }
+  </style>
 </head>
 <body>
-    <!-- Header -->
-    <div th:replace="fragments/header :: navbar"></div>
-    
-    <div class="container">
-        <!-- Featured Game -->
-        <section class="featured">
-            <h2 class="section-title">Featured</h2>
-            <div class="featured-game">
-                <div class="featured-info">
-                    <h1 class="featured-title" th:text="${featuredGame.title}">Cyberpunk 2077</h1>
-                    <p class="featured-desc" th:text="${featuredGame.description}">An open-world, action-adventure story set in Night City...</p>
-                    <a th:href="@{/games/{id}(id=${featuredGame.id})}" class="buy-btn">Buy Now</a>
-                </div>
-                <div class="featured-image">
-                    <img th:src="${featuredGame.imageUrl}" alt="Featured Game">
-                </div>
-            </div>
-        </section>
-        
-        <!-- New Releases -->
-        <section class="new-releases">
-            <h2 class="section-title">New Releases</h2>
-            <div class="games-grid">
-                <div class="game-card" th:each="game : ${newReleases}">
-                    <img class="game-img" th:src="${game.imageUrl}" th:alt="${game.title}">
-                    <div class="game-info">
-                        <h3 class="game-title" th:text="${game.title}">Game Title</h3>
-                        <p class="game-date" th:text="${#temporals.format(game.releaseDate, 'MMMM d, yyyy')}">Release Date</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-        
-        <!-- Two Column Layout -->
-        <div class="two-column">
-            <!-- Trending Games -->
-            <section class="trending">
-                <h2 class="section-title">Trending Now</h2>
-                <div class="trending-list">
-                    <div class="list-item" th:each="game : ${trendingGames}">
-                        <img class="list-img" th:src="${game.imageUrl}" th:alt="${game.title}">
-                        <div class="list-info">
-                            <h3 class="list-title" th:text="${game.title}">Game Title</h3>
-                            <p class="list-price" th:text="${'$' + #numbers.formatDecimal(game.price, 1, 2)}">$0.00</p>
-                        </div>
-                    </div>
-                </div>
-            </section>
-            
-            <!-- Games on Sale -->
-            <section class="on-sale">
-                <h2 class="section-title">On Sale</h2>
-                <div class="sale-list">
-                    <div class="list-item" th:each="game : ${gamesOnSale}">
-                        <img class="list-img" th:src="${game.imageUrl}" th:alt="${game.title}">
-                        <div class="list-info">
-                            <h3 class="list-title" th:text="${game.title}">Game Title</h3>
-                            <p class="list-price">
-                                <span class="discount-percentage" th:text="${game.discountPercentage + '% off'}">0% off</span>
-                            </p>
-                        </div>
-                        <div class="sale-price">
-                            <span class="original-price" th:text="${'$' + #numbers.formatDecimal(game.price, 1, 2)}">$0.00</span>
-                            <span class="discount-price" th:text="${'$' + #numbers.formatDecimal(game.salePrice, 1, 2)}">$0.00</span>
-                        </div>
-                    </div>
-                </div>
-            </section>
-        </div>
+<div class="container py-2">
+
+  <!-- Featured -->
+  <nav class="navbar navbar-expand-lg navbar-dark mb-4">
+    <div class="container-fluid">
+
+      <a class="navbar-brand" href="#">GameHub</a>
+
+      <!-- Search bar outside the collapsible section so it's always visible -->
+
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse mb-3 mb-lg-0" id="navbarSupportedContent">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="#">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Store</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link d-lg-none" href="#">Search</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Library</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Settings</a>
+          </li>
+
+        </ul>
+        <form class="me-4 d-none d-lg-flex" >
+          <input class="form-control form-control-sm me-1" type="search" placeholder="Search" aria-label="Search">
+          <button class="btn btn-outline-light btn-sm" type="submit">Search</button>
+        </form>
+        <button class="btn btn-warning btn-sm">Login</button>
+      </div>
     </div>
-    
-    <!-- Footer -->
-    <div th:replace="fragments/footer :: footer"></div>
+  </nav>
+  <div class="row mb-4">
+    <!--/*@thymesVar id="game" type="com.gamehaven.steam.model.Game"*/-->
+    <div class="col-md-9 order-md-1">
+      <img th:src="${game.getBannerUrl()}" class="img-fluid rounded-3" alt="Cyberpunk">
+    </div>
+    <div class="col-md-3 order-md-0 mt-2 mt-md-3 mt-sm-4">
+      <h2 class="fw-bold" th:text="${game.getTitle()}">Cyberpunk 2077</h2>
+      <p th:text="${game.getDescription().substring(0,200)}">An open-world, action-adventure story set in Night City.</p>
+      <a class="btn btn-primary mt-sm-2">Buy Now</a>
+    </div>
+  </div>
+
+  <!-- New Releases -->
+  <div class="section-title">New Releases</div>
+  <div class="row row-cols-2 row-cols-md-4 g-4">
+    <!--/*@thymesVar id="games" type="List<com.gamehaven.steam.model.Game>"*/-->
+    <!--/*@thymesVar id="g" type="com.gamehaven.steam.model.Game"*/-->
+    <div class="col" th:each="g : ${games}">
+      <img th:src="${g.getCoverUrl()}" class="img-fluid rounded" th:alt="${g.getTitle()}">
+      <div class="game-title mt-2" th:text="${g.getTitle()}">Dark Souls II</div>
+      <small th:text="${g.getReleaseDate()}">April 21, 2024</small>
+    </div>
+
+  </div>
+
+  <!-- Trending and On Sale -->
+  <div class="row mt-5">
+    <div class="col-md-6">
+      <div class="section-title">Trending Now</div>
+      <!--/*@thymesVar id="RGames" type="List<com.gamehaven.steam.model.Game>"*/-->
+      <!--/*@thymesVar id="RGame" type="com.gamehaven.steam.model.Game"*/-->
+      <ul class="list-group list-group-flush" th:each="RGame : ${RGames}">
+        <li class="list-group-item bg-transparent text-white border-0 d-flex justify-content-between ">
+          <span>
+          <img th:src="${RGame.getBannerUrl()}"class="rounded small-img" alt="test"><span class="ms-2" th:text="${RGame.getTitle()}">Elden Ring</span></span>
+          <span class="fs-5" th:text="${'$'+RGame.getPrice()}">$11.99</span>
+        </li>
+      </ul>
+    </div>
+    <div class="col-md-6">
+      <div class="section-title">On Sale</div>
+      <ul class="list-group list-group-flush">
+        <li class="list-group-item bg-transparent text-white border-0 d-flex justify-content-between">
+          <span><img src="https://cdn2.steamgriddb.com/grid/fdb55ce855129e05da8374059cc82728.png"   class="rounded small-img" alt="test"><span class="ms-2">The Witcher 3: Wild Hunt</span></span>
+          <span class="d-flex flex-column "><span class="price-original small text-end">$39.99</span><span class="fs-5">$11.99</span></span>
+        </li>
+        <li class="list-group-item bg-transparent text-white border-0 d-flex justify-content-between">
+          <span><img src="https://cdn2.steamgriddb.com/grid/8ae34e78a45f03785187ff46078048bb.png"   class="rounded small-img" alt="test"><span class="ms-2">Star Wars Jedi: Fallen Order</span></span>
+          <span class="d-flex flex-column "><span class="price-original small text-end">$39.99</span><span class="fs-5">$11.99</span></span>
+        </li>
+        <li class="list-group-item bg-transparent text-white border-0 d-flex justify-content-between">
+          <span><img src="https://cdn2.steamgriddb.com/grid/4ae07c5784b22b90843e98c6406f81c7.png"   class="rounded small-img" alt="test"><span class="ms-2">Hades</span></span>
+          <span class="d-flex flex-column "><span class="price-original small text-end">$39.99</span><span class="fs-5">$11.99</span></span>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+</div>
+<script src="js/bootstrap.js"></script>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
 </body>
 </html>
