@@ -1,81 +1,65 @@
 package com.gamehaven.steam.model;
 
 import jakarta.persistence.*;
-import org.hibernate.annotations.ColumnDefault;
-import org.hibernate.annotations.CreationTimestamp;
+import lombok.Getter;
+import lombok.Setter;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-import java.time.Instant;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 @Entity
-@Table(name = "users")
-public class User {
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+@Getter
+@Setter
+public class User implements UserDetails {
     @Id
-    @Column(name = "id", nullable = false)
-    private Integer id;
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    private int Id;
 
-    @Column(name = "username", nullable = false, length = 50)
+    @Column(unique=true, nullable=false)
     private String username;
 
-    @Column(name = "email", nullable = false, length = 100)
-    private String email;
+    @Column(nullable = false,length = 60)
+    private String password;
 
-    @Column(name = "password_hash", nullable = false)
-    private String passwordHash;
+    @ManyToMany
+    @JoinTable(
+            name = "user_library",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "game_id"),
+            uniqueConstraints = @UniqueConstraint(columnNames = {"user_id", "game_id"})
+    )
+    List<Game> ownedGames = new ArrayList<>();
 
-    @Column(name = "avatar_url")
-    private String avatarUrl;
+    @Enumerated(EnumType.STRING)
+    private Role role = Role.USER;
 
-    @CreationTimestamp
-    @Column(name = "created_at")
-    private Instant createdAt;
-
-    public Integer getId() {
-        return id;
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(new SimpleGrantedAuthority(role.name()));
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
     }
 
-    public String getUsername() {
-        return username;
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
     }
 
-    public String getEmail() {
-        return email;
+    @Override
+    public boolean isEnabled() {
+        return true;
     }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPasswordHash() {
-        return passwordHash;
-    }
-
-    public void setPasswordHash(String passwordHash) {
-        this.passwordHash = passwordHash;
-    }
-
-    public String getAvatarUrl() {
-        return avatarUrl;
-    }
-
-    public void setAvatarUrl(String avatarUrl) {
-        this.avatarUrl = avatarUrl;
-    }
-
-    public Instant getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(Instant createdAt) {
-        this.createdAt = createdAt;
-    }
-
 }

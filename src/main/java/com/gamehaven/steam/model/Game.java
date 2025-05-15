@@ -1,118 +1,83 @@
 package com.gamehaven.steam.model;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.gamehaven.steam.model.*;
 import jakarta.persistence.*;
-import org.hibernate.annotations.ColumnDefault;
-
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.time.LocalDate;
+import lombok.*;
+import java.util.*;
 
 @Entity
 @Table(name = "games")
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Game {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
-    private Integer id;
+    private Long id;
 
-    @JsonProperty("name")
-    @Column(nullable = false, length = 100)
+    @ManyToMany
+    @JoinTable(name = "game_dlcs",
+            joinColumns = @JoinColumn(name = "game_id"),
+            inverseJoinColumns = @JoinColumn(name = "dlc_id")
+    )
+    private List<Game> dlcs = new ArrayList<>();
+
+    private String type;
+
     private String title;
 
-    @Lob
-    @JsonProperty("description")
+    private boolean isFree;
+
     @Column(columnDefinition = "TEXT")
-    private String description;
+    private String aboutTheGame;
 
-    @Column(length = 100)
-    private String developer; // Ce champ sera rempli manuellement
+    @Column(columnDefinition = "TEXT")
+    private String shortDescription;
 
-    @JsonProperty("released")
-    @Column(name = "release_date")
-    private LocalDate releaseDate;
+    @Column(columnDefinition = "TEXT")
+    private String supportedLanguages;
 
-    @Column(precision = 10, scale = 2)
-    private BigDecimal price;
+    private String capsuleImage;
 
-    @Column(name = "cover_url")
-    private String coverUrl;
-    @Column(name = "banner_url")
-    private String bannerUrl;
+    @Embedded
+    private PcRequirements pcRequirements;
 
-    @Column(name = "metacritic")
-    private int metacritic;
+    @ElementCollection
+    @CollectionTable(name = "game_developers", joinColumns = @JoinColumn(name = "game_id"))
+    @Column(name = "developer")
+    private List<String> developers = new ArrayList<>();
 
-    public Integer getId() {
-        return id;
-    }
+    @ElementCollection
+    @CollectionTable(name = "game_publishers", joinColumns = @JoinColumn(name = "game_id"))
+    @Column(name = "publisher")
+    private List<String> publishers = new ArrayList<>();
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
+    @Embedded
+    private PriceOverview priceOverview;
 
-    public String getTitle() {
-        return title;
-    }
+    @Embedded
+    private Platform platform;
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "game_genres",
+            joinColumns = @JoinColumn(name = "game_id"),
+            inverseJoinColumns = @JoinColumn(name = "genre_id"))
+    private List<Genre> genres = new ArrayList<>();
 
-    public String getDescription() {
-        return description;
-    }
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "game_id")
+    private List<Screenshot> screenshots = new ArrayList<>();
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "game_id")
+    private List<Movie> trailers = new ArrayList<>();
 
-    public String getDeveloper() {
-        return developer;
-    }
-
-    public void setDeveloper(String developer) {
-        this.developer = developer;
-    }
-
-    public LocalDate getReleaseDate() {
-        return releaseDate;
-    }
-
-    public void setReleaseDate(LocalDate releaseDate) {
-        this.releaseDate = releaseDate;
-    }
-
-    public BigDecimal getPrice() {
-        return price;
-    }
-
-    public void setPrice(BigDecimal price) {
-        this.price = price;
-    }
-
-    public String getCoverUrl() {
-        return coverUrl;
-    }
-
-    public void setCoverUrl(String coverUrl) {
-        this.coverUrl = coverUrl;
-    }
-
-    public String getBannerUrl() {
-        return bannerUrl;
-    }
-
-    public void setBannerUrl(String bannerUrl) {
-        this.bannerUrl = bannerUrl;
-    }
+    @Embedded
+    private ReleaseDate releaseDate;
 
 
-    public int getMetacritic() {
-        return metacritic;
-    }
-
-    public void setMetacritic(int metacritic) {
-        this.metacritic = metacritic;
-    }
+    @Embedded
+    private Ratings ratings;
 }
+

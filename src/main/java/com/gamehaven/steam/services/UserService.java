@@ -3,26 +3,31 @@ package com.gamehaven.steam.services;
 import com.gamehaven.steam.model.User;
 import com.gamehaven.steam.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 @Service
-public class UserService {
+public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
-
+    private final PasswordEncoder passwordEncoder;
     @Autowired
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
-    public User createUser(User user) {
-        return userRepository.save(user);
-    }
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
-    }
-    public User getUserById(int id) {
-            return userRepository.findById(id).isPresent() ? userRepository.findById(id).get() : null;
 
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        return userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+    }
+    public void register(RegisterForm dto){
+        User user = new User();
+        user.setUsername(dto.getUsername());
+        user.setPassword(passwordEncoder.encode(dto.getPassword()));
+        userRepository.save(user);
     }
 }
