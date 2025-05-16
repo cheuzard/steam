@@ -27,14 +27,25 @@ public class Movie {
     private String thumbnail;
 
     @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(name = "movie_webm", joinColumns = @JoinColumn(name = "movie_id"))
+    @CollectionTable(name = "movie_webm",
+            joinColumns = {
+                    @JoinColumn(name = "game_id", referencedColumnName = "game_id"),
+                    @JoinColumn(name = "movie_id", referencedColumnName = "id")
+            })
     @MapKeyColumn(name = "quality")
     @Column(name = "url")
     private Map<String, String> webm = new HashMap<>();
 
     @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(name = "movie_mp4", joinColumns = @JoinColumn(name = "movie_id"))
+    @CollectionTable(name = "movie_mp4",
+            joinColumns = {
+                    @JoinColumn(name = "game_id", referencedColumnName = "game_id"),
+                    @JoinColumn(name = "movie_id", referencedColumnName = "id")
+            })
     @MapKeyColumn(name = "quality")
     @Column(name = "url")
     private Map<String, String> mp4 = new HashMap<>();
+
+
+
 }

@@ -11,9 +11,9 @@ import java.util.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 public class Game {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToMany
@@ -21,6 +21,7 @@ public class Game {
             joinColumns = @JoinColumn(name = "game_id"),
             inverseJoinColumns = @JoinColumn(name = "dlc_id")
     )
+    @ToString.Exclude
     private List<Game> dlcs = new ArrayList<>();
 
     private String type;
@@ -63,14 +64,17 @@ public class Game {
     @JoinTable(name = "game_genres",
             joinColumns = @JoinColumn(name = "game_id"),
             inverseJoinColumns = @JoinColumn(name = "genre_id"))
+    @ToString.Exclude
     private List<Genre> genres = new ArrayList<>();
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "game_id")
+    @ToString.Exclude
     private List<Screenshot> screenshots = new ArrayList<>();
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "game_id")
+    @ToString.Exclude
     private List<Movie> trailers = new ArrayList<>();
 
     @Embedded

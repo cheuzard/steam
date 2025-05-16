@@ -2,10 +2,11 @@ package com.gamehaven.steam.controller;
 
 import com.gamehaven.steam.model.Game;
 import com.gamehaven.steam.model.GameRepository;
+import com.gamehaven.steam.model.Movie;
 import com.gamehaven.steam.services.DTO.GameDetailsDTO;
 import com.gamehaven.steam.services.DTO.SteamAppListResponseDTO;
 import com.gamehaven.steam.services.SteamService;
-//import com.gamehaven.steam.services.mapper.GameMapper;
+import com.gamehaven.steam.services.mapper.GameMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -57,8 +58,27 @@ public class SteamController {
         }
         return ResponseEntity.ok(response);
     }
+    @GetMapping("/printApp")
+    public ResponseEntity<Map<String, Object>> printApp(@RequestParam String appid){
+        Map<String, Object> response = new HashMap<>();
+        response.put("appid", appid);
+        try{
+            Optional<GameDetailsDTO> gameDetails =
+                    steamService.getGameDetails(appid);
+//            gameDetails.ifPresent(gameDetailsDTO -> response.put("gameDetails", gameMapper.toEntity(gameDetailsDTO)));
+            if (gameDetails.isPresent()){
+                Game g = gameMapper.toEntity(gameDetails.get());
+                System.out.println(g.getTitle());
+                System.out.println(g.getGenres());
+//                response.put("game", g );
+            }
+        }catch (Exception e){
+            System.out.println("erro getting game details: " + e.getMessage());
+        }
+        return ResponseEntity.ok(response);
+    }
 
-    @GetMapping("saveApp")
+    @GetMapping("/saveApp")
     public ResponseEntity<Map<String, Object>> saveApp(@RequestParam String appid){
         Map<String, Object> response = new HashMap<>();
         response.put("appid", appid);
@@ -66,11 +86,19 @@ public class SteamController {
             Optional<GameDetailsDTO> gameDetails =
                     steamService.getGameDetails(appid);
             if(gameDetails.isPresent()) {
-                Game game = GameMapper.toEntity(gameDetails);
-                gameRepository.save(game);
+                System.out.println(gameDetails.get().getTrailers().get(0).getId());
+                Game game = gameMapper.toEntity(gameDetails.get());
+                System.out.println(game.toString());
+                for (Movie m : game.getTrailers()){
+                    System.out.println("gameId"+m.getId().getGameId());
+                    System.out.println("Screenshot Id"+m.getId().getId());
+                    System.out.println("mp4"+m.getMp4()+"\n");
+                }
+                    gameRepository.save(game);
                 response.put("gameSaved", true);
             };
         }catch (Exception e){
+            response.put("gameSaved", false);
             System.out.println("erro getting game details: " + e.getMessage());
         }
         return ResponseEntity.ok(response);

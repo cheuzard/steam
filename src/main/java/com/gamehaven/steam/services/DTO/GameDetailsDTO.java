@@ -9,6 +9,11 @@ import java.util.List;
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class GameDetailsDTO {
+
+
+    @JsonProperty("steam_appid")
+    private String id;
+
     @JsonProperty("type")
     private String type;
 

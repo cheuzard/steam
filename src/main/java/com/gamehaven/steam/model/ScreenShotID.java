@@ -1,5 +1,6 @@
 package com.gamehaven.steam.model;
 
+import jakarta.persistence.Embeddable;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
@@ -13,6 +14,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @EqualsAndHashCode
 @Data
+@Embeddable
 public class ScreenShotID implements Serializable {
 
     private Long gameId;
