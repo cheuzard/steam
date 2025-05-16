@@ -34,11 +34,6 @@ public class SteamService {
                 .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     }
 
-    /**
-     * Retrieves the list of all Steam apps with their IDs and names
-     *
-     * @return List of app DTOs from the Steam API
-     */
     public List<SteamAppListResponseDTO.AppDTO> getAllSteamApps() {
         try {
             ResponseEntity<SteamAppListResponseDTO> response = restTemplate.getForEntity(

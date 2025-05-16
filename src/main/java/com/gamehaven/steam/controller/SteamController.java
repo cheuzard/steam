@@ -1,11 +1,11 @@
-package com.gamehaven.steam.controllers;
+package com.gamehaven.steam.controller;
 
 import com.gamehaven.steam.model.Game;
 import com.gamehaven.steam.model.GameRepository;
 import com.gamehaven.steam.services.DTO.GameDetailsDTO;
 import com.gamehaven.steam.services.DTO.SteamAppListResponseDTO;
 import com.gamehaven.steam.services.SteamService;
-import com.gamehaven.steam.services.mapper.GameMapper;
+//import com.gamehaven.steam.services.mapper.GameMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

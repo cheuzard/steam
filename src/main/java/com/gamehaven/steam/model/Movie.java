@@ -16,8 +16,13 @@ import java.util.Map;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Movie {
-    @Id
-    private Long id;
+    @EmbeddedId
+    private MovieID id;
+
+    @ManyToOne
+    @MapsId("gameId")
+    private Game game;
+
     private String name;
     private String thumbnail;
 
